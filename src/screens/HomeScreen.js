@@ -5,6 +5,7 @@ import { Row, Col } from 'react-bootstrap'
 import Product from '../components/Product'
 
 import { listProducts } from '../redux/actions/productActions'
+import Loader from '../components/Loader'
 
 function HomeScreen() {
   const dispatch = useDispatch()
@@ -19,7 +20,7 @@ function HomeScreen() {
     <>
       <h1>Latest products</h1>
       {loading ? (
-        <h3>Loading...</h3>
+        <Loader />
       ) : error ? (
         <h3>{error}</h3>
       ) : (
