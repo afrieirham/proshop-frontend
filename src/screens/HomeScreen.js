@@ -6,6 +6,7 @@ import Product from '../components/Product'
 
 import { listProducts } from '../redux/actions/productActions'
 import Loader from '../components/Loader'
+import Message from '../components/Message'
 
 function HomeScreen() {
   const dispatch = useDispatch()
@@ -22,7 +23,7 @@ function HomeScreen() {
       {loading ? (
         <Loader />
       ) : error ? (
-        <h3>{error}</h3>
+        <Message variant='danger'>{error}</Message>
       ) : (
         <Row>
           {products.map((product) => (
