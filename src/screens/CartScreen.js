@@ -87,7 +87,7 @@ function CartScreen({ match, location, history }) {
               <Button
                 type='button'
                 block
-                disable={cartItems.length === 0}
+                disabled={cartItems.length === 0}
                 onClick={checkoutHandler}
               >
                 Checkout
