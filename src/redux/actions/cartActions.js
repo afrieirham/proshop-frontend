@@ -48,5 +48,5 @@ export const savePaymentMethod = (data) => async (disptach) => {
     payload: data,
   })
 
-  localStorage.setItem('shippingAddress', JSON.stringify(data))
+  localStorage.setItem('paymentMethod', JSON.stringify(data))
 }
