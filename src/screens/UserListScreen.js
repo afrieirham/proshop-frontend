@@ -7,14 +7,16 @@ import { Table, Button } from 'react-bootstrap'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 
-function UserListScreen() {
+function UserListScreen({ history }) {
   const dispatch = useDispatch()
 
   const { loading, error, users } = useSelector(({ userList }) => userList)
+  const { userInfo } = useSelector(({ userLogin }) => userLogin)
 
   useEffect(() => {
+    if (!userInfo || !userInfo.isAdmin) history.push('/login')
     dispatch(listUsers())
-  }, [dispatch])
+  }, [dispatch, history, userInfo])
 
   const deleteHandler = (id) => {
     console.log(id)
