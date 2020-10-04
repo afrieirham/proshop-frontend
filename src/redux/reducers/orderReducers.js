@@ -29,7 +29,10 @@ export const orderCreateReducter = (state = {}, action) => {
   }
 }
 
-export const orderDetailsReducter = (state = { orderItems: [], shippingAddress: {} }, action) => {
+export const orderDetailsReducter = (
+  state = { loading: true, orderItems: [], shippingAddress: {} },
+  action
+) => {
   switch (action.type) {
     case ORDER_DETAILS_REQUEST:
       return {
