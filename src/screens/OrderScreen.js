@@ -1,7 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { getOrderDetails } from '../redux/actions/orderActions'
+import { getOrderDetails, payOrder } from '../redux/actions/orderActions'
+import axios from 'axios'
+import { PayPalButton } from 'react-paypal-button-v2'
+import { ORDER_PAY_RESET } from '../redux/types/orderTypes'
 
 import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
 import Message from '../components/Message'
@@ -10,12 +13,34 @@ import Loader from '../components/Loader'
 function OrderScreen({ match }) {
   const dispatch = useDispatch()
 
+  const [sdkReady, setSdkReady] = useState(false)
+
   const orderId = match.params.id
   const { loading, error, order } = useSelector(({ orderDetails }) => orderDetails)
+  const { loading: loadingPay, success: successPay } = useSelector(({ orderPay }) => orderPay)
 
   useEffect(() => {
-    dispatch(getOrderDetails(orderId))
-  }, [orderId, dispatch])
+    const addPayPalScript = async () => {
+      const { data } = await axios.get('/api/config/paypal')
+      const script = document.createElement('script')
+      script.type = 'text/javascript'
+      script.src = 'https://www.paypal.com/sdk/js?client-id=' + data.clientId
+      script.asycn = true
+      script.onload = () => setSdkReady(true)
+      document.body.appendChild(script)
+    }
+
+    if (!order || successPay) {
+      dispatch({ type: ORDER_PAY_RESET })
+      dispatch(getOrderDetails(orderId))
+    } else {
+      !order.isPaid && !window.paypal ? addPayPalScript() : setSdkReady(true)
+    }
+  }, [orderId, dispatch, successPay, order])
+
+  const successPaymentHandler = (paymentResult) => {
+    dispatch(payOrder(orderId, paymentResult))
+  }
 
   if (loading) return <Loader />
   if (error) return <Message variant='danger'>{error}</Message>
@@ -120,6 +145,15 @@ function OrderScreen({ match }) {
                   <Col>${order.totalPrice.toFixed(2)}</Col>
                 </Row>
               </ListGroup.Item>
+              {!order.isPaid && (
+                <ListGroup.Item>
+                  {!sdkReady ? (
+                    <Loader />
+                  ) : (
+                    <PayPalButton amount={order.totalPrice} onSuccess={successPaymentHandler} />
+                  )}
+                </ListGroup.Item>
+              )}
             </ListGroup>
           </Card>
         </Col>
