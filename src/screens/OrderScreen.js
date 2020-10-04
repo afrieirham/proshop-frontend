@@ -6,7 +6,7 @@ import axios from 'axios'
 import { PayPalButton } from 'react-paypal-button-v2'
 import { ORDER_PAY_RESET } from '../redux/types/orderTypes'
 
-import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
+import { Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 
