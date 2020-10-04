@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { listUsers } from '../redux/actions/userActions'
+import { listUsers, deleteUser } from '../redux/actions/userActions'
 
 import { Table, Button } from 'react-bootstrap'
 import Message from '../components/Message'
@@ -12,14 +12,15 @@ function UserListScreen({ history }) {
 
   const { loading, error, users } = useSelector(({ userList }) => userList)
   const { userInfo } = useSelector(({ userLogin }) => userLogin)
+  const { success: successDelete } = useSelector(({ userDelete }) => userDelete)
 
   useEffect(() => {
     if (!userInfo || !userInfo.isAdmin) history.push('/login')
     dispatch(listUsers())
-  }, [dispatch, history, userInfo])
+  }, [dispatch, history, userInfo, successDelete])
 
   const deleteHandler = (id) => {
-    console.log(id)
+    if (window.confirm('Are you sure?')) dispatch(deleteUser(id))
   }
   return (
     <>
