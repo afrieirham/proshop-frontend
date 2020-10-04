@@ -147,6 +147,7 @@ function OrderScreen({ match }) {
               </ListGroup.Item>
               {!order.isPaid && (
                 <ListGroup.Item>
+                  {loadingPay && <Loader />}
                   {!sdkReady ? (
                     <Loader />
                   ) : (
