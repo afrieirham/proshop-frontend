@@ -24,23 +24,30 @@ function OrderScreen({ match, history }) {
   )
 
   useEffect(() => {
-    if (!userInfo) history.push('/login')
-    const addPayPalScript = async () => {
-      const { data } = await axios.get('/api/config/paypal')
-      const script = document.createElement('script')
-      script.type = 'text/javascript'
-      script.src = 'https://www.paypal.com/sdk/js?client-id=' + data.clientId
-      script.asycn = true
-      script.onload = () => setSdkReady(true)
-      document.body.appendChild(script)
-    }
-
-    if (!order || successPay || successDeliver) {
-      dispatch({ type: ORDER_DELIVER_RESET })
-      dispatch({ type: ORDER_PAY_RESET })
-      dispatch(getOrderDetails(orderId))
+    if (!userInfo) {
+      history.push('/login')
     } else {
-      !order.isPaid && !window.paypal ? addPayPalScript() : setSdkReady(true)
+      const addPayPalScript = async () => {
+        const { data } = await axios.get('/api/config/paypal')
+        const script = document.createElement('script')
+        script.type = 'text/javascript'
+        script.src = 'https://www.paypal.com/sdk/js?client-id=' + data.clientId
+        script.asycn = true
+        script.onload = () => setSdkReady(true)
+        document.body.appendChild(script)
+      }
+
+      if (!order || successPay || successDeliver) {
+        dispatch({ type: ORDER_DELIVER_RESET })
+        dispatch({ type: ORDER_PAY_RESET })
+        dispatch(getOrderDetails(orderId))
+      } else {
+        if (!userInfo.isAdmin && userInfo._id !== order.user._id) {
+          history.push('/login')
+        } else {
+          !order.isPaid && !window.paypal ? addPayPalScript() : setSdkReady(true)
+        }
+      }
     }
   }, [orderId, dispatch, successPay, successDeliver, order, userInfo, history])
 
@@ -155,7 +162,7 @@ function OrderScreen({ match, history }) {
                   <Col>${order.totalPrice.toFixed(2)}</Col>
                 </Row>
               </ListGroup.Item>
-              {!order.isPaid && (
+              {userInfo && userInfo._id === order.user._id && !order.isPaid && (
                 <ListGroup.Item>
                   {loadingPay && <Loader />}
                   {!sdkReady ? (
