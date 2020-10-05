@@ -147,7 +147,7 @@ function ProfileScreen({ location, history }) {
                     <td>
                       <Link to={'/order/' + order._id}>
                         <Button size='sm' variant='light'>
-                          <i class='fas fa-arrow-right'></i>
+                          <i className='fas fa-arrow-right'></i>
                         </Button>
                       </Link>
                     </td>
