@@ -8,6 +8,7 @@ import { listProducts } from '../redux/actions/productActions'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import Paginate from '../components/Paginate'
+import ProductCarousel from '../components/ProductCarousel'
 
 function HomeScreen({ match }) {
   const keyword = match.params.keyword
@@ -23,6 +24,7 @@ function HomeScreen({ match }) {
 
   return (
     <>
+      {!keyword && <ProductCarousel />}
       <h1>Latest products</h1>
       {products.length === 0 && <Message>No products found</Message>}
       {loading ? (
