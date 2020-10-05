@@ -15,7 +15,7 @@ function ProductScreen({ match }) {
   const dispatch = useDispatch()
   const history = useHistory()
 
-  const { loading, error, product } = useSelector(({ productDetail }) => productDetail)
+  const { loading, error, product } = useSelector(({ productDetails }) => productDetails)
 
   useEffect(() => {
     dispatch(listProductDetails(match.params.id))
