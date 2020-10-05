@@ -24,7 +24,6 @@ import {
   USER_UPDATE_REQUEST,
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAIL,
-  USER_UPDATE_RESET,
 } from '../types/userTypes'
 
 import { ORDER_LIST_MY_RESET } from '../types/orderTypes'
