@@ -56,7 +56,7 @@ function UserListScreen({ history }) {
                   )}
                 </td>
                 <td>
-                  <Link to={'/user/' + user._id + '/edit'}>
+                  <Link to={`/admin/users/${user._id}/edit`}>
                     <Button variant='light' size='sm'>
                       <i className='fas fa-edit'></i>
                     </Button>
