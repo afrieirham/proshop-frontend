@@ -42,7 +42,7 @@ function OrderScreen({ match, history }) {
     } else {
       !order.isPaid && !window.paypal ? addPayPalScript() : setSdkReady(true)
     }
-  }, [orderId, dispatch, successPay, successDeliver, order])
+  }, [orderId, dispatch, successPay, successDeliver, order, userInfo, history])
 
   const successPaymentHandler = (paymentResult) => {
     dispatch(payOrder(orderId, paymentResult))
