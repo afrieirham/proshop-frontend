@@ -22,11 +22,7 @@ import {
   PRODUCT_CREATE_REVIEW_RESET,
 } from '../types/productTypes'
 
-const initialState = {
-  products: [],
-}
-
-export const productListReducer = (state = initialState, action) => {
+export const productListReducer = (state = { products: [] }, action) => {
   switch (action.type) {
     case PRODUCT_LIST_REQUEST:
       return {
@@ -36,7 +32,9 @@ export const productListReducer = (state = initialState, action) => {
     case PRODUCT_LIST_SUCCESS:
       return {
         loading: false,
-        products: action.payload,
+        products: action.payload.products,
+        pages: action.payload.pages,
+        page: action.payload.page,
       }
     case PRODUCT_LIST_FAIL:
       return {
