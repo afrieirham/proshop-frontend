@@ -22,6 +22,7 @@ function HomeScreen({ match }) {
   return (
     <>
       <h1>Latest products</h1>
+      {products.length === 0 && <Message>No products found</Message>}
       {loading ? (
         <Loader />
       ) : error ? (
