@@ -8,14 +8,16 @@ import { listProducts } from '../redux/actions/productActions'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 
-function HomeScreen() {
+function HomeScreen({ match }) {
+  const keyword = match.params.keyword
+
   const dispatch = useDispatch()
 
   const { loading, error, products } = useSelector(({ productList }) => productList)
 
   useEffect(() => {
-    dispatch(listProducts())
-  }, [dispatch])
+    dispatch(listProducts(keyword))
+  }, [dispatch, keyword])
 
   return (
     <>
