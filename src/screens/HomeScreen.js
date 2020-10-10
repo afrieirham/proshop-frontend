@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { listProducts } from '../redux/actions/productActions'
 
 import { Row, Col } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
+import Meta from '../components/Meta'
 import Product from '../components/Product'
-
-import { listProducts } from '../redux/actions/productActions'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import Paginate from '../components/Paginate'
@@ -24,8 +25,19 @@ function HomeScreen({ match }) {
 
   return (
     <>
-      {!keyword && <ProductCarousel />}
-      <h1>Latest products</h1>
+      <Meta />
+
+      {!keyword ? (
+        <>
+          <h1>Featured Products</h1>
+          <ProductCarousel />
+        </>
+      ) : (
+        <Link to='/' className='btn btn-light'>
+          Go Back
+        </Link>
+      )}
+      <h1>{keyword ? 'Search results' : 'Latest products'}</h1>
       {products.length === 0 && <Message>No products found</Message>}
       {loading ? (
         <Loader />
