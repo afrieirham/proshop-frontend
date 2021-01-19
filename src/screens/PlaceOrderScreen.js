@@ -6,10 +6,13 @@ import { createOrder } from '../redux/actions/orderActions'
 import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
 import Message from '../components/Message'
 import CheckoutSteps from '../components/CheckoutSteps'
+import { getParentDetails } from '../redux/actions/userActions'
 
 function PlaceOrderScreen({ history }) {
   const dispatch = useDispatch()
   const cart = useSelector(({ cart }) => cart)
+  const { userInfo } = useSelector(state => state.userLogin)
+  const { parent } = useSelector(state => state.parentInfo)
 
   const addDecimals = (num) => (Math.round(num * 100) / 100).toFixed(2)
 
@@ -27,7 +30,8 @@ function PlaceOrderScreen({ history }) {
 
   useEffect(() => {
     if (success) history.push('/order/' + order._id)
-  }, [history, success, order])
+    dispatch(getParentDetails())
+  }, [history, success, order, userInfo, dispatch])
 
   const placeOrderHandler = () => {
     dispatch(
@@ -39,6 +43,7 @@ function PlaceOrderScreen({ history }) {
         shippingPrice: cart.shippingPrice,
         taxPrice: cart.taxPrice,
         totalPrice: cart.totalPrice,
+        parent: parent._id,
       })
     )
   }
@@ -49,21 +54,36 @@ function PlaceOrderScreen({ history }) {
       <Row>
         <Col md={8}>
           <ListGroup variant='flush'>
-            <ListGroup.Item>
-              <h2>Shipping</h2>
-              <p>
-                <strong>Address: </strong>
-                {cart.shippingAddress.address}, {cart.shippingAddress.city}{' '}
-                {cart.shippingAddress.postalCode}, {cart.shippingAddress.country}
-              </p>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <h2>Payment method</h2>
-              <p>
-                <strong>Method: </strong>
-                {cart.paymentMethod}
-              </p>
-            </ListGroup.Item>
+            {
+              Boolean(!userInfo?.parent) ? (
+                <>
+                  <ListGroup.Item>
+                    <h2>Shipping</h2>
+                    <p>
+                      <strong>Address: </strong>
+                      {cart.shippingAddress.address}, {cart.shippingAddress.city}{' '}
+                      {cart.shippingAddress.postalCode}, {cart.shippingAddress.country}
+                    </p>
+                  </ListGroup.Item>
+                  <ListGroup.Item>
+                    <h2>Payment method</h2>
+                    <p>
+                      <strong>Method: </strong>
+                      {cart.paymentMethod}
+                    </p>
+                  </ListGroup.Item>
+                </>
+              ) : 
+              (
+                <ListGroup.Item>
+                  <h2>Redirect order to</h2>
+                  <p>
+                    <strong>Parent: </strong>
+                    {parent.name}
+                  </p>
+                </ListGroup.Item>
+              )
+            }
 
             <ListGroup.Item>
               <h2>Order items</h2>
@@ -141,7 +161,7 @@ function PlaceOrderScreen({ history }) {
                   disabled={cart.cartItems === 0}
                   onClick={placeOrderHandler}
                 >
-                  Place Order
+                  {userInfo?.parent ? 'Request Order' : 'Place Order'}
                 </Button>
               </ListGroup.Item>
             </ListGroup>
