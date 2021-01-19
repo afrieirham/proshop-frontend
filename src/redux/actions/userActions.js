@@ -24,6 +24,9 @@ import {
   USER_UPDATE_REQUEST,
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAIL,
+  USER_REGISTER_CHILD_REQUEST,
+  USER_REGISTER_CHILD_FAIL,
+  USER_REGISTER_CHILD_SUCCESS,
 } from '../types/userTypes'
 
 import { ORDER_LIST_MY_RESET } from '../types/orderTypes'
@@ -228,6 +231,34 @@ export const updateUser = (user) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: USER_UPDATE_FAIL,
+      payload:
+        error.response && error.response.data.message ? error.response.data.message : error.message,
+    })
+  }
+}
+
+export const registerChild = (password, token) => async (dispatch) => {
+  try {
+    dispatch({
+      type: USER_REGISTER_CHILD_REQUEST,
+    })
+
+    const { data } = await axios.post('/api/users/register', {password, token })
+
+    dispatch({
+      type: USER_REGISTER_CHILD_SUCCESS,
+      payload: data,
+    })
+
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: data,
+    })
+
+    localStorage.setItem('userInfo', JSON.stringify(data))
+  } catch (error) {
+    dispatch({
+      type: USER_REGISTER_CHILD_FAIL,
       payload:
         error.response && error.response.data.message ? error.response.data.message : error.message,
     })

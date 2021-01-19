@@ -20,6 +20,7 @@ import UserEditScreen from './screens/UserEditScreen'
 import ProductListScreen from './screens/ProductListScreen'
 import ProductEditScreen from './screens/ProductEditScreen'
 import OrderListScreen from './screens/OrderListScreen'
+import RegisterChildScreen from './screens/RegisterChildScreen'
 
 function App() {
   return (
@@ -39,7 +40,8 @@ function App() {
             <Route exact path='/admin/products/:pageNumber' component={ProductListScreen} />
             <Route exact path='/admin/products' component={ProductListScreen} />
             <Route path='/profile' component={ProfileScreen} />
-            <Route path='/register' component={RegisterScreen} />
+            <Route exact path='/register' component={RegisterScreen} />
+            <Route path='/register/:token' component={RegisterChildScreen} />
             <Route path='/login' component={LoginScreen} />
             <Route path='/shipping' component={ShippingScreen} />
             <Route path='/payment' component={PaymentScreen} />
