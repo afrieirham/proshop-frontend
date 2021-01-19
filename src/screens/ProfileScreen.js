@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getUserDetails, updateUserProfile , registerChild } from '../redux/actions/userActions'
+import { getUserDetails, updateUserProfile , inviteChild } from '../redux/actions/userActions'
 import { listMyOrders } from '../redux/actions/orderActions'
 
 import { Link } from 'react-router-dom'
@@ -23,7 +23,7 @@ function ProfileScreen({ location, history }) {
   const { loading, user } = useSelector(({ userDetails }) => userDetails)
   const { userInfo } = useSelector(({ userLogin }) => userLogin)
   const { success, error } = useSelector(({ userUpdateProfile }) => userUpdateProfile)
-  const { success:successRegisterChild, error:errorRegisterChild } = useSelector(({ userRegisterChild }) => userRegisterChild)
+  const { success:successInviteChild, error:errorInviteChild } = useSelector(({ userInviteChild }) => userInviteChild)
   const { orders, loading: loadingOrders, error: errorOrders } = useSelector(
     ({ orderListMy }) => orderListMy
   )
@@ -31,9 +31,11 @@ function ProfileScreen({ location, history }) {
   useEffect(() => {
     if (!userInfo) history.push('/login')
 
+    dispatch(listMyOrders())
+
+  
     if (!user?.name) {
       dispatch(getUserDetails('profile'))
-      dispatch(listMyOrders())
     } else {
       setName(user.name)
       setEmail(user.email)
@@ -59,7 +61,7 @@ function ProfileScreen({ location, history }) {
     e.preventDefault()
 
     dispatch(
-      registerChild(
+      inviteChild(
         childName,
         childEmail,
       )
@@ -73,8 +75,8 @@ function ProfileScreen({ location, history }) {
           {message && <Message variant='danger'>{message}</Message>}
           {error && <Message variant='danger'>{error}</Message>}
           {success && <Message variant='success'>Profile updated</Message>}
-          {successRegisterChild && <Message variant='success'>Child account created</Message>}
-          {errorRegisterChild && <Message variant='danger'>{errorRegisterChild}</Message>}
+          {successInviteChild && <Message variant='success'>Child account created</Message>}
+          {errorInviteChild && <Message variant='danger'>{errorInviteChild}</Message>}
           {loading && <Loader variant='danger' />}
           <Form onSubmit={submitHandler}>
             <Form.Group controlId='name'>
