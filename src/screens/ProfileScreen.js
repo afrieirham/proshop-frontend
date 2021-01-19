@@ -27,9 +27,10 @@ function ProfileScreen({ location, history }) {
   useEffect(() => {
     if (!userInfo) history.push('/login')
 
+    dispatch(listMyOrders())
+
     if (!user.name) {
       dispatch(getUserDetails('profile'))
-      dispatch(listMyOrders())
     } else {
       setName(user.name)
       setEmail(user.email)
