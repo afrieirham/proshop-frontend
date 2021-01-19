@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { addToCart, removeFromCart } from '../redux/actions/cartActions'
+import { ORDER_DETAILS_RESET, ORDER_CREATE_RESET } from '../redux/types/orderTypes'
 
 import Message from '../components/Message'
 import { Row, Col, ListGroup, Image, Form, Button, Card } from 'react-bootstrap'
@@ -16,6 +17,8 @@ function CartScreen({ match, location, history }) {
   const { userInfo } = useSelector(state => state.userLogin)
 
   useEffect(() => {
+    dispatch({ type: ORDER_DETAILS_RESET })
+    dispatch({ type: ORDER_CREATE_RESET })
     if (productId) {
       dispatch(addToCart(productId, qty))
     }

@@ -46,8 +46,8 @@ function PlaceOrderScreen({ history }) {
         parent: parent?._id,
       })
     )
+    localStorage.removeItem("cartItems")
   }
-
   return (
     <>
       <CheckoutSteps step1 step2 step3 step4 />

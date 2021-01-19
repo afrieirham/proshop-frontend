@@ -27,6 +27,12 @@ import {
   USER_PARENT_DETAILS_REQUEST,
   USER_PARENT_DETAILS_FAIL,
   USER_PARENT_DETAILS_SUCCESS,
+  USER_REGISTER_CHILD_REQUEST,
+  USER_REGISTER_CHILD_SUCCESS,
+  USER_REGISTER_CHILD_FAIL,
+  USER_INVITE_CHILD_REQUEST,
+  USER_INVITE_CHILD_SUCCESS,
+  USER_INVITE_CHILD_FAIL,
 } from '../types/userTypes'
 
 export const userLoginReducer = (state = {}, action) => {
@@ -211,6 +217,50 @@ export const userUpdateReducer = (state = { user: {} }, action) => {
     case USER_UPDATE_RESET:
       return {
         user: {},
+      }
+    default:
+      return state
+  }
+}
+
+export const userRegisterChildReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_REGISTER_CHILD_REQUEST:
+      return {
+        loading: true,
+      }
+    case USER_REGISTER_CHILD_SUCCESS:
+      return {
+        loading: false,
+        userInfo: action.payload,
+        success: true,
+      }
+    case USER_REGISTER_CHILD_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      }
+    default:
+      return state
+  }
+}
+
+export const userInviteChildReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_INVITE_CHILD_REQUEST:
+      return {
+        loading: true,
+      }
+    case USER_INVITE_CHILD_SUCCESS:
+      return {
+        loading: false,
+        userInfo: action.payload,
+        success: true,
+      }
+    case USER_INVITE_CHILD_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
       }
     default:
       return state

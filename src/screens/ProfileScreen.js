@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getUserDetails, updateUserProfile } from '../redux/actions/userActions'
+import { getUserDetails, updateUserProfile , inviteChild } from '../redux/actions/userActions'
 import { listMyOrders } from '../redux/actions/orderActions'
 
 import { Link } from 'react-router-dom'
@@ -14,12 +14,16 @@ function ProfileScreen({ location, history }) {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [message, setMessage] = useState(null)
+  const [childName, setChildName] = useState('')
+  const [childEmail, setChildEmail] = useState('')
+
 
   const dispatch = useDispatch()
 
   const { loading, user } = useSelector(({ userDetails }) => userDetails)
   const { userInfo } = useSelector(({ userLogin }) => userLogin)
   const { success, error } = useSelector(({ userUpdateProfile }) => userUpdateProfile)
+  const { success:successInviteChild, error:errorInviteChild } = useSelector(({ userInviteChild }) => userInviteChild)
   const { orders, loading: loadingOrders, error: errorOrders } = useSelector(
     ({ orderListMy }) => orderListMy
   )
@@ -27,9 +31,10 @@ function ProfileScreen({ location, history }) {
   useEffect(() => {
     if (!userInfo) history.push('/login')
 
-    if (!user.name) {
+    dispatch(listMyOrders())
+  
+    if (!user?.name) {
       dispatch(getUserDetails('profile'))
-      dispatch(listMyOrders())
     } else {
       setName(user.name)
       setEmail(user.email)
@@ -50,6 +55,17 @@ function ProfileScreen({ location, history }) {
       })
     )
   }
+
+  const submitChildHandler = (e) => {
+    e.preventDefault()
+
+    dispatch(
+      inviteChild(
+        childName,
+        childEmail,
+      )
+    )
+  }
   return (
     <>
       <Row>
@@ -58,6 +74,8 @@ function ProfileScreen({ location, history }) {
           {message && <Message variant='danger'>{message}</Message>}
           {error && <Message variant='danger'>{error}</Message>}
           {success && <Message variant='success'>Profile updated</Message>}
+          {successInviteChild && <Message variant='success'>Child account created</Message>}
+          {errorInviteChild && <Message variant='danger'>{errorInviteChild}</Message>}
           {loading && <Loader variant='danger' />}
           <Form onSubmit={submitHandler}>
             <Form.Group controlId='name'>
@@ -104,6 +122,34 @@ function ProfileScreen({ location, history }) {
               Update profile
             </Button>
           </Form>
+
+          {!user?.parent && 
+            <Form onSubmit={submitChildHandler}>
+            <Form.Group controlId='name'>
+              <Form.Label>Child Name</Form.Label>
+              <Form.Control
+                type='name'
+                placeholder='Enter children name'
+                onChange={(e) => setChildName(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
+            <Form.Group controlId='email'>
+              <Form.Label>Email children address</Form.Label>
+              <Form.Control
+                type='email'
+                placeholder='Enter children email'
+                onChange={(e) => setChildEmail(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
+            <Button type='submit' variant='primary'>
+              Add Children
+            </Button>
+            </Form>
+          }
+
+
         </Col>
         <Col md={9}>
           <h2>My Orders</h2>
