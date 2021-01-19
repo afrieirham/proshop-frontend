@@ -304,4 +304,3 @@ export const inviteChild = (name, email) => async (dispatch, getState) => {
     });
   }
 };
-}
