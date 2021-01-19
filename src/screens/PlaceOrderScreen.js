@@ -43,7 +43,7 @@ function PlaceOrderScreen({ history }) {
         shippingPrice: cart.shippingPrice,
         taxPrice: cart.taxPrice,
         totalPrice: cart.totalPrice,
-        parent: parent._id,
+        parent: parent?._id,
       })
     )
   }
