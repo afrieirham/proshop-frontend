@@ -12,6 +12,7 @@ import moment from 'moment'
 import { Row, Col, ListGroup, Image, Card, Button } from 'react-bootstrap'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
+import { getParentDetails } from '../redux/actions/userActions'
 import StripePay from '../components/StripePay'
 
 function OrderScreen({ match, history }) {
@@ -21,6 +22,7 @@ function OrderScreen({ match, history }) {
   const orderId = match.params.id
   const { loading, error, order } = useSelector(({ orderDetails }) => orderDetails)
   const { userInfo } = useSelector(({ userLogin }) => userLogin)
+  const { parent } = useSelector((state) => state.parentInfo)
   const { loading: loadingPay, success: successPay } = useSelector(({ orderPay }) => orderPay)
   const { loading: loadingDeliver, success: successDeliver } = useSelector(
     ({ orderDeliver }) => orderDeliver
@@ -56,6 +58,10 @@ function OrderScreen({ match, history }) {
     }
   }, [orderId, dispatch, successPay, successDeliver, order, userInfo, history])
 
+  useEffect(() => {
+    dispatch(getParentDetails())
+  }, [dispatch])
+
   const successPaymentHandler = (paymentResult) => {
     dispatch(payOrder(orderId, paymentResult))
   }
@@ -87,11 +93,14 @@ function OrderScreen({ match, history }) {
                 <strong>Email:</strong>{' '}
                 <a href={'mailto:' + order.user.email}>{order.user.email}</a>
               </p>
-              <p>
-                <strong>Address: </strong>
-                {order.shippingAddress.address}, {order.shippingAddress.city}{' '}
-                {order.shippingAddress.postalCode}, {order.shippingAddress.country}
-              </p>
+              {order.shippingAddress &&
+                (<p>
+                  <strong>Address: </strong>
+                  {order.shippingAddress.address}, {order.shippingAddress.city}{' '}
+                  {order.shippingAddress.postalCode}, {order.shippingAddress.country}
+                </p>
+                )
+              }
             </ListGroup.Item>
             <ListGroup.Item>
               <h2>Payment method</h2>
@@ -102,7 +111,7 @@ function OrderScreen({ match, history }) {
               )}
               <p>
                 <strong>Method: </strong>
-                {order.paymentMethod}
+                {parent ? 'Paid by parent' : order.paymentMethod}
               </p>
             </ListGroup.Item>
             <ListGroup.Item>
