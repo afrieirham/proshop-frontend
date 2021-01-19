@@ -5,6 +5,7 @@ import { getOrderDetails, payOrder, deliverOrder } from '../redux/actions/orderA
 import axios from 'axios'
 import { PayPalButton } from 'react-paypal-button-v2'
 import { ORDER_PAY_RESET, ORDER_DELIVER_RESET } from '../redux/types/orderTypes'
+import moment from 'moment'
 
 import { Row, Col, ListGroup, Image, Card, Button } from 'react-bootstrap'
 import Message from '../components/Message'
@@ -71,7 +72,7 @@ function OrderScreen({ match, history }) {
             <ListGroup.Item>
               <h2>Shipping</h2>
               {order.isDelivered ? (
-                <Message variant='success'>Delivered on {order.deliveredAt}</Message>
+                <Message variant='success'>Delivered on {moment(order.deliveredAt).format("D MMM YYYY")}</Message>
               ) : (
                 <Message variant='danger'>Not delivered</Message>
               )}
@@ -91,7 +92,7 @@ function OrderScreen({ match, history }) {
             <ListGroup.Item>
               <h2>Payment method</h2>
               {order.isPaid ? (
-                <Message variant='success'>Paid on {order.paidAt}</Message>
+                <Message variant='success'>Paid on {moment(order.paidAt).format("D MMM YYYY")}</Message>
               ) : (
                 <Message variant='danger'>Not paid</Message>
               )}
