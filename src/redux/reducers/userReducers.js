@@ -24,6 +24,9 @@ import {
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAIL,
   USER_UPDATE_RESET,
+  USER_PARENT_DETAILS_REQUEST,
+  USER_PARENT_DETAILS_FAIL,
+  USER_PARENT_DETAILS_SUCCESS,
 } from '../types/userTypes'
 
 export const userLoginReducer = (state = {}, action) => {
@@ -89,6 +92,28 @@ export const userDetailsReducer = (state = { user: {} }, action) => {
       }
     case USER_DETAILS_RESET:
       return { user: {} }
+    default:
+      return state
+  }
+}
+
+export const userParentDetailsReducer = (state = { parent: {} }, action) => {
+  switch (action.type) {
+    case USER_PARENT_DETAILS_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      }
+    case USER_PARENT_DETAILS_SUCCESS:
+      return {
+        loading: false,
+        parent: action.payload,
+      }
+    case USER_PARENT_DETAILS_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      }
     default:
       return state
   }
