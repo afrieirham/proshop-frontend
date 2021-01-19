@@ -41,8 +41,8 @@ function PlaceOrderScreen({ history }) {
         totalPrice: cart.totalPrice,
       })
     )
+    localStorage.removeItem("cartItems")
   }
-
   return (
     <>
       <CheckoutSteps step1 step2 step3 step4 />

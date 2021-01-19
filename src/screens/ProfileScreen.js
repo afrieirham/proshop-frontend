@@ -32,7 +32,6 @@ function ProfileScreen({ location, history }) {
     if (!userInfo) history.push('/login')
 
     dispatch(listMyOrders())
-
   
     if (!user?.name) {
       dispatch(getUserDetails('profile'))
