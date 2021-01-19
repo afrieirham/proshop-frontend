@@ -27,6 +27,9 @@ import {
   USER_REGISTER_CHILD_REQUEST,
   USER_REGISTER_CHILD_FAIL,
   USER_REGISTER_CHILD_SUCCESS,
+  USER_INVITE_CHILD_REQUEST,
+  USER_INVITE_CHILD_FAIL,
+  USER_INVITE_CHILD_SUCCESS,
 } from '../types/userTypes'
 
 import { ORDER_LIST_MY_RESET } from '../types/orderTypes'
@@ -263,4 +266,42 @@ export const registerChild = (password, token) => async (dispatch) => {
         error.response && error.response.data.message ? error.response.data.message : error.message,
     })
   }
+}
+
+export const inviteChild = (name, email) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_INVITE_CHILD_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        Authorization: "Bearer " + userInfo.token,
+      },
+    };
+    const { data } = await axios.post(
+      "/api/users/child",
+      { name, email },
+      config
+    );
+
+    dispatch({
+      type: USER_INVITE_CHILD_SUCCESS,
+      payload: data,
+    });
+
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_INVITE_CHILD_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
 }
