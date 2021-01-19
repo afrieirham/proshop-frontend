@@ -14,6 +14,7 @@ function CartScreen({ match, location, history }) {
   const dispatch = useDispatch()
 
   const { cartItems } = useSelector(({ cart }) => cart)
+  const { userInfo } = useSelector(state => state.userLogin)
 
   useEffect(() => {
     dispatch({ type: ORDER_DETAILS_RESET })
@@ -28,7 +29,20 @@ function CartScreen({ match, location, history }) {
   }
 
   const checkoutHandler = () => {
-    history.push('/login?redirect=shipping')
+
+    // User not logged in
+    if (!userInfo) {
+      history.push('/login?redirect=cart')
+    }
+    // User is child account
+    else if (userInfo.parent) {
+      history.push('/login?redirect=place-order')
+    }
+    // Regular user
+    else {
+      history.push('/login?redirect=shipping')
+    }
+
   }
 
   return (
