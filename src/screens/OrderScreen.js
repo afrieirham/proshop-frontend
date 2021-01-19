@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from '@stripe/react-stripe-js';
 import { getOrderDetails, payOrder, deliverOrder } from '../redux/actions/orderActions'
 import axios from 'axios'
 import { PayPalButton } from 'react-paypal-button-v2'
@@ -9,10 +11,10 @@ import { ORDER_PAY_RESET, ORDER_DELIVER_RESET } from '../redux/types/orderTypes'
 import { Row, Col, ListGroup, Image, Card, Button } from 'react-bootstrap'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
+import StripePay from '../components/StripePay'
 
 function OrderScreen({ match, history }) {
   const dispatch = useDispatch()
-
   const [sdkReady, setSdkReady] = useState(false)
 
   const orderId = match.params.id
@@ -22,6 +24,8 @@ function OrderScreen({ match, history }) {
   const { loading: loadingDeliver, success: successDeliver } = useSelector(
     ({ orderDeliver }) => orderDeliver
   )
+  const PUBLIC_KEY = "pk_test_51IB1RoJW8nAYHWxGy9DOOJNU7iVDMlmPB14iGTiA8koN62PZ568s7XcI1io6VMqcy1md5THU0PAlP6XFxaw1MxTJ00ZrPZXufd";
+  const stripeTestPromise = loadStripe(PUBLIC_KEY);
 
   useEffect(() => {
     if (!userInfo) {
@@ -162,7 +166,7 @@ function OrderScreen({ match, history }) {
                   <Col>${order.totalPrice.toFixed(2)}</Col>
                 </Row>
               </ListGroup.Item>
-              {userInfo && userInfo._id === order.user._id && !order.isPaid && (
+              {userInfo && userInfo._id === order.user._id && !order.isPaid && order.paymentMethod === 'PayPal' && (
                 <ListGroup.Item>
                   {loadingPay && <Loader />}
                   {!sdkReady ? (
@@ -171,6 +175,13 @@ function OrderScreen({ match, history }) {
                     <PayPalButton amount={order.totalPrice} onSuccess={successPaymentHandler} />
                   )}
                 </ListGroup.Item>
+              )}
+              {userInfo && userInfo._id === order.user._id && !order.isPaid && order.paymentMethod === 'Stripe' && (
+                <ListGroup.Item>
+                <Elements stripe={stripeTestPromise}>
+                <StripePay email={order.user.email} orderId={orderId}/>
+              </Elements>
+              </ListGroup.Item>
               )}
               {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
                 <ListGroup.Item>
