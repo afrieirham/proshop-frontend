@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { listProductDetails, updateProduct } from '../redux/actions/productActions'
 import { PRODUCT_UPDATE_RESET } from '../redux/types/productTypes'
 
-import { Form, Button } from 'react-bootstrap'
+import { Form, Button, Image } from 'react-bootstrap'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import FormContainer from '../components/FormContainer'
@@ -15,7 +15,7 @@ function ProductEditScreen({ match, history }) {
 
   const [name, setName] = useState('')
   const [price, setPrice] = useState(0)
-  const [image, setImage] = useState('')
+  const [image, setImage] = useState('/images/sample.jpg')
   const [brand, setBrand] = useState('')
   const [category, setCategory] = useState('')
   const [countInStock, setCountInStock] = useState(0)
@@ -52,15 +52,13 @@ function ProductEditScreen({ match, history }) {
     const file = e.target.files[0]
     const formData = new FormData()
 
-    formData.append('image', file)
+    formData.append('file', file)
+    formData.append("upload_preset", process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
     setUploading(true)
 
     try {
-      const config = { headers: { 'Content-Type': 'multipart/form-data' } }
-
-      const { data } = await axios.post('/api/upload', formData, config)
-      console.log(data)
-      setImage(data)
+      const { data } = await axios.post(process.env.REACT_APP_UPLOAD_ENDPOINT, formData,)
+      setImage(data.secure_url)
       setUploading(false)
     } catch (error) {
       console.error(error)
@@ -119,13 +117,7 @@ function ProductEditScreen({ match, history }) {
 
             <Form.Group controlId='image'>
               <Form.Label>Image</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter image url'
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
-              ></Form.Control>
-              <br />
+              <Image src={image} className="productscreen-image" thumbnail />
               <Form.File
                 id='image-file'
                 label='Upload file'
