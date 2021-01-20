@@ -33,6 +33,9 @@ import {
   USER_INVITE_CHILD_REQUEST,
   USER_INVITE_CHILD_FAIL,
   USER_INVITE_CHILD_SUCCESS,
+  USER_SHOW_CHILD_REQUEST,
+  USER_SHOW_CHILD_SUCCESS,
+  USER_SHOW_CHILD_FAIL,
 } from '../types/userTypes'
 
 import { ORDER_LIST_MY_RESET } from '../types/orderTypes'
@@ -336,3 +339,32 @@ export const inviteChild = (name, email) => async (dispatch, getState) => {
     });
   }
 };
+
+export const getChildrenDetails = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_SHOW_CHILD_REQUEST,
+    })
+
+    const { userInfo } = getState().userLogin
+
+    const config = {
+      headers: {
+        Authorization: 'Bearer ' + userInfo.token,
+      },
+    }
+
+    const { data } = await axios.get('/api/users/children', config)
+
+    dispatch({
+      type: USER_SHOW_CHILD_SUCCESS,
+      payload: data,
+    })
+  } catch (error) {
+    dispatch({
+      type: USER_SHOW_CHILD_FAIL,
+      payload:
+        error.response && error.response.data.message ? error.response.data.message : error.message,
+    })
+  }
+}
