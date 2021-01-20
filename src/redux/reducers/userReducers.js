@@ -33,6 +33,9 @@ import {
   USER_INVITE_CHILD_REQUEST,
   USER_INVITE_CHILD_SUCCESS,
   USER_INVITE_CHILD_FAIL,
+  USER_SHOW_CHILD_REQUEST,
+  USER_SHOW_CHILD_SUCCESS,
+  USER_SHOW_CHILD_FAIL,
 } from '../types/userTypes'
 
 export const userLoginReducer = (state = {}, action) => {
@@ -258,6 +261,28 @@ export const userInviteChildReducer = (state = {}, action) => {
         success: true,
       }
     case USER_INVITE_CHILD_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      }
+    default:
+      return state
+  }
+}
+
+export const userChildrenDetailsReducer = (state = { children: {} }, action) => {
+  switch (action.type) {
+    case USER_SHOW_CHILD_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      }
+    case USER_SHOW_CHILD_SUCCESS:
+      return {
+        loading: false,
+        children: action.payload,
+      }
+    case USER_SHOW_CHILD_FAIL:
       return {
         loading: false,
         error: action.payload,

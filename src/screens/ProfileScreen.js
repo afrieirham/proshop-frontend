@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getUserDetails, updateUserProfile , inviteChild } from '../redux/actions/userActions'
+import { getUserDetails, updateUserProfile , inviteChild , getChildrenDetails } from '../redux/actions/userActions'
 import { listMyOrders } from '../redux/actions/orderActions'
 
 import { Link } from 'react-router-dom'
@@ -27,6 +27,7 @@ function ProfileScreen({ location, history }) {
   const { orders, loading: loadingOrders, error: errorOrders } = useSelector(
     ({ orderListMy }) => orderListMy
   )
+  const { loading: loadingChildren, children } = useSelector(({ userChildrenDetails }) => userChildrenDetails)
 
   useEffect(() => {
     if (!userInfo) history.push('/login')
@@ -35,11 +36,12 @@ function ProfileScreen({ location, history }) {
   
     if (!user?.name) {
       dispatch(getUserDetails('profile'))
+      dispatch(getChildrenDetails())
     } else {
       setName(user.name)
       setEmail(user.email)
     }
-  }, [dispatch, history, userInfo, user])
+  }, [dispatch, history, userInfo, user , children])
 
   const submitHandler = (e) => {
     e.preventDefault()
@@ -152,56 +154,88 @@ function ProfileScreen({ location, history }) {
 
         </Col>
         <Col md={9}>
-          <h2>My Orders</h2>
-          {loadingOrders && <Loader />}
-          {errorOrders && <Message variant='danger'>{errorOrders}</Message>}
-          {(orders === undefined || orders.length === 0) && (
-            <Message>
-              You haven't bought anything yet. <Link to='/'>Buy something now.</Link>
-            </Message>
-          )}
-          {orders !== undefined && orders.length > 0 && (
-            <Table striped bordered hover responsive className='table-sm'>
-              <tbody>
-                <tr>
-                  <th>ID</th>
-                  <th>Date</th>
-                  <th>Total</th>
-                  <th>Paid</th>
-                  <th>Delivered</th>
-                  <th>Detail</th>
-                </tr>
-                {orders.map((order) => (
-                  <tr key={order._id}>
-                    <td>{order._id}</td>
-                    <td>{order.createdAt.substring(0, 10)}</td>
-                    <td>{order.totalPrice}</td>
-                    <td>
-                      {order.isPaid ? (
-                        order.paidAt.substring(0, 10)
-                      ) : (
-                        <i className='fas fa-times' style={{ color: 'red' }}></i>
-                      )}
-                    </td>
-                    <td>
-                      {order.isDelivered ? (
-                        order.deliveredAt.substring(0, 10)
-                      ) : (
-                        <i className='fas fa-times' style={{ color: 'red' }}></i>
-                      )}
-                    </td>
-                    <td>
-                      <Link to={'/order/' + order._id}>
-                        <Button size='sm' variant='light'>
-                          <i className='fas fa-arrow-right'></i>
-                        </Button>
-                      </Link>
-                    </td>
+          <div>
+            <h2>My Orders</h2>
+            {loadingOrders && <Loader />}
+            {errorOrders && <Message variant='danger'>{errorOrders}</Message>}
+            {(orders === undefined || orders.length === 0) && (
+              <Message>
+                You haven't bought anything yet. <Link to='/'>Buy something now.</Link>
+              </Message>
+            )}
+            {orders !== undefined && orders.length > 0 && (
+              <Table striped bordered hover responsive className='table-sm'>
+                <tbody>
+                  <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Total</th>
+                    <th>Paid</th>
+                    <th>Delivered</th>
+                    <th>Detail</th>
                   </tr>
-                ))}
-              </tbody>
-            </Table>
-          )}
+                  {orders.map((order) => (
+                    <tr key={order._id}>
+                      <td>{order._id}</td>
+                      <td>{order.createdAt.substring(0, 10)}</td>
+                      <td>{order.totalPrice}</td>
+                      <td>
+                        {order.isPaid ? (
+                          order.paidAt.substring(0, 10)
+                        ) : (
+                          <i className='fas fa-times' style={{ color: 'red' }}></i>
+                        )}
+                      </td>
+                      <td>
+                        {order.isDelivered ? (
+                          order.deliveredAt.substring(0, 10)
+                        ) : (
+                          <i className='fas fa-times' style={{ color: 'red' }}></i>
+                        )}
+                      </td>
+                      <td>
+                        <Link to={'/order/' + order._id}>
+                          <Button size='sm' variant='light'>
+                            <i className='fas fa-arrow-right'></i>
+                          </Button>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            )}
+          </div>
+          {!user?.parent &&
+          <div>
+            <h2>My Children</h2>
+            {loadingChildren && <Loader />}
+            {/* {errorOrders && <Message variant='danger'>{errorOrders}</Message>} */}
+            {(children === undefined || children.length === 0) && (
+              <Message>
+                You haven't add any invite children yet. Invite children by fill in their name and email address.
+              </Message>
+            )}
+            {children !== undefined && children.length > 0 && (
+              <Table striped bordered hover responsive className='table-sm'>
+                <tbody>
+                  <tr>
+                    <th>No.</th>
+                    <th>Name</th>
+                    <th>Email address</th>
+                  </tr>
+                  {children.map((children , i) => (
+                    <tr key={children._id}>
+                      <td>{i+1}</td>
+                      <td>{children.name}</td>
+                      <td>{children.email}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            )}
+          </div>
+          }
         </Col>
       </Row>
     </>
