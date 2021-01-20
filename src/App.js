@@ -21,6 +21,7 @@ import ProductListScreen from './screens/ProductListScreen'
 import ProductEditScreen from './screens/ProductEditScreen'
 import OrderListScreen from './screens/OrderListScreen'
 import RegisterChildScreen from './screens/RegisterChildScreen'
+import PrivateRoute from './components/PrivateRoute'
 
 function App() {
   return (
@@ -33,20 +34,20 @@ function App() {
             <Route exact path='/search/:keyword' component={HomeScreen} />
             <Route exact path='/page/:pageNumber' component={HomeScreen} />
             <Route exact path='/' component={HomeScreen} />
-            <Route path='/admin/orders' component={OrderListScreen} />
-            <Route path='/admin/users/:id/edit' component={UserEditScreen} />
-            <Route path='/admin/users' component={UserListScreen} />
-            <Route exact path='/admin/products/:id/edit' component={ProductEditScreen} />
-            <Route exact path='/admin/products/:pageNumber' component={ProductListScreen} />
-            <Route exact path='/admin/products' component={ProductListScreen} />
-            <Route path='/profile' component={ProfileScreen} />
+            <PrivateRoute admin path='/admin/orders' component={OrderListScreen} />
+            <PrivateRoute admin path='/admin/users/:id/edit' component={UserEditScreen} />
+            <PrivateRoute admin path='/admin/users' component={UserListScreen} />
+            <PrivateRoute admin exact path='/admin/products/:id/edit' component={ProductEditScreen} />
+            <PrivateRoute admin exact path='/admin/products/:pageNumber' component={ProductListScreen} />
+            <PrivateRoute admin exact path='/admin/products' component={ProductListScreen} />
+            <PrivateRoute path='/profile' component={ProfileScreen} />
             <Route exact path='/register' component={RegisterScreen} />
             <Route path='/register/:token' component={RegisterChildScreen} />
             <Route path='/login' component={LoginScreen} />
-            <Route path='/shipping' component={ShippingScreen} />
-            <Route path='/payment' component={PaymentScreen} />
-            <Route path='/place-order' component={PlaceOrderScreen} />
-            <Route path='/order/:id' component={OrderScreen} />
+            <PrivateRoute path='/shipping' component={ShippingScreen} />
+            <PrivateRoute path='/payment' component={PaymentScreen} />
+            <PrivateRoute path='/place-order' component={PlaceOrderScreen} />
+            <PrivateRoute path='/order/:id' component={OrderScreen} />
             <Route path='/product/:id' component={ProductScreen} />
             <Route path='/cart/:id?' component={CartScreen} />
           </Switch>
