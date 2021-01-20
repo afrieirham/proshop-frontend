@@ -57,7 +57,7 @@ function ProductEditScreen({ match, history }) {
     setUploading(true)
 
     try {
-      const { data } = await axios.post(process.env.REACT_APP_UPLOAD_ENDPOINT, formData,)
+      const { data } = await axios.post(process.env.REACT_APP_CLOUDINARY_UPLOAD_ENDPOINT, formData,)
       setImage(data.secure_url)
       setUploading(false)
     } catch (error) {
