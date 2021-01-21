@@ -3,7 +3,7 @@ import { Route, useHistory, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../redux/actions/userActions'
 
-function ProtectedRoute({ admin, ...rest }) {
+function PrivateRoute({ admin, ...rest }) {
   const dispatch = useDispatch()
   const history = useHistory()
   const location = useLocation()
@@ -25,4 +25,4 @@ function ProtectedRoute({ admin, ...rest }) {
   return <Route {...rest} />
 }
 
-export default ProtectedRoute
+export default PrivateRoute

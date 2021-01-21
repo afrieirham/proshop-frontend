@@ -6,13 +6,13 @@ function GuestRoute({ ...rest }) {
   const history = useHistory()
   const location = useLocation()
   const { userInfo } = useSelector((state) => state.userLogin)
-
+  const redirect = location.search ? location.search.split('=')[1] : '/'
   useEffect(() => {
     // Redirect user to homescreen if logged in
     if (userInfo) {
-      return history.push('/')
+      return history.push(redirect)
     }
-  }, [location, history, userInfo,])
+  }, [location, history, userInfo, redirect])
 
   return <Route {...rest} />
 }

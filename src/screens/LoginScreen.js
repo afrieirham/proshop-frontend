@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { login } from '../redux/actions/userActions'
@@ -8,19 +8,13 @@ import Message from '../components/Message'
 import Loader from '../components/Loader'
 import FormContainer from '../components/FormContainer'
 
-function LoginScreen({ location, history }) {
+function LoginScreen() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
   const dispatch = useDispatch()
 
-  const { loading, error, userInfo } = useSelector(({ userLogin }) => userLogin)
-
-  const redirect = location.search ? location.search.split('=')[1] : '/'
-
-  useEffect(() => {
-    if (userInfo) history.push(redirect)
-  }, [history, userInfo, redirect])
+  const { loading, error } = useSelector(({ userLogin }) => userLogin)
 
   const submitHandler = (e) => {
     e.preventDefault()
@@ -60,7 +54,7 @@ function LoginScreen({ location, history }) {
       <Row className='py-3'>
         <Col>
           New customer?{' '}
-          <Link to={redirect ? '/register?redirect=' + redirect : '/register'}>Register here</Link>
+          <Link to='/register'>Register here</Link>
         </Col>
       </Row>
     </FormContainer>
