@@ -22,6 +22,7 @@ import ProductEditScreen from './screens/ProductEditScreen'
 import OrderListScreen from './screens/OrderListScreen'
 import RegisterChildScreen from './screens/RegisterChildScreen'
 import PrivateRoute from './components/PrivateRoute'
+import GuestRoute from './components/GuestRoute'
 
 function App() {
   return (
@@ -41,9 +42,9 @@ function App() {
             <PrivateRoute admin exact path='/admin/products/:pageNumber' component={ProductListScreen} />
             <PrivateRoute admin exact path='/admin/products' component={ProductListScreen} />
             <PrivateRoute path='/profile' component={ProfileScreen} />
-            <Route exact path='/register' component={RegisterScreen} />
-            <Route path='/register/:token' component={RegisterChildScreen} />
-            <Route path='/login' component={LoginScreen} />
+            <GuestRoute exact path='/register' component={RegisterScreen} />
+            <GuestRoute path='/register/:token' component={RegisterChildScreen} />
+            <GuestRoute path='/login' component={LoginScreen} />
             <PrivateRoute path='/shipping' component={ShippingScreen} />
             <PrivateRoute path='/payment' component={PaymentScreen} />
             <PrivateRoute path='/place-order' component={PlaceOrderScreen} />
