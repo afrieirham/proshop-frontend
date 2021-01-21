@@ -32,8 +32,9 @@ import {
   userInviteChildReducer,
   userChildrenDetailsReducer,
 } from './reducers/userReducers'
+import { USER_LOGOUT } from './types/userTypes'
 
-const reducer = combineReducers({
+const appReducer = combineReducers({
   productTopRated: productTopRatedReducer,
   productList: productListReducer,
   productUpdate: productUpdateReducer,
@@ -88,6 +89,14 @@ const initialState = {
   },
 }
 const middleware = [thunk]
+
+// Reset redux state when user logout
+const reducer = (state, action) => {
+  if (action.type === USER_LOGOUT) {
+    state = undefined
+  }
+  return appReducer(state, action)
+}
 
 const store = createStore(
   reducer,
