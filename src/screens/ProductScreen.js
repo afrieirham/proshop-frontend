@@ -20,7 +20,8 @@ function ProductScreen({ match }) {
   const dispatch = useDispatch()
   const history = useHistory()
 
-  const { userInfo } = useSelector(({ userLogin }) => userLogin)
+  const { userInfo} = useSelector(({ userLogin }) => userLogin)
+  const { canReviewProduct} = userInfo
   const { loading, error, product } = useSelector(({ productDetails }) => productDetails)
   const { success: successProductReview, error: errorProductReview } = useSelector(
     ({ productReviewCreate }) => productReviewCreate
@@ -142,7 +143,9 @@ function ProductScreen({ match }) {
                       <p>{review.comment}</p>
                     </ListGroup.Item>
                   ))}
-                  <ListGroup.Item>
+                  {canReviewProduct.map((productreviewId)=> (
+                    productreviewId == productId &&
+                    (<ListGroup.Item>
                     <h2>Write a customer review</h2>
                     {errorProductReview && <Message variant='danger'>{errorProductReview}</Message>}
                     {userInfo ? (
@@ -180,7 +183,10 @@ function ProductScreen({ match }) {
                         Please <Link to='/login'>login</Link> to review
                       </Message>
                     )}
-                  </ListGroup.Item>
+                  </ListGroup.Item>)
+                 
+                  ))}
+                  
                 </ListGroup>
               }
             </Col>
