@@ -21,7 +21,7 @@ function ProductScreen({ match }) {
   const history = useHistory()
 
   const { userInfo} = useSelector(({ userLogin }) => userLogin)
-  const { canReviewProduct} = userInfo
+  const canReviewProduct = userInfo?.canReviewProduct?.some(boughtProductId => boughtProductId === productId)
   const { loading, error, product } = useSelector(({ productDetails }) => productDetails)
   const { success: successProductReview, error: errorProductReview } = useSelector(
     ({ productReviewCreate }) => productReviewCreate
@@ -143,8 +143,8 @@ function ProductScreen({ match }) {
                       <p>{review.comment}</p>
                     </ListGroup.Item>
                   ))}
-                  {canReviewProduct.map((productreviewId)=> (
-                    productreviewId == productId &&
+                  {
+                    canReviewProduct &&
                     (<ListGroup.Item>
                     <h2>Write a customer review</h2>
                     {errorProductReview && <Message variant='danger'>{errorProductReview}</Message>}
@@ -185,7 +185,7 @@ function ProductScreen({ match }) {
                     )}
                   </ListGroup.Item>)
                  
-                  ))}
+                  }
                   
                 </ListGroup>
               }
