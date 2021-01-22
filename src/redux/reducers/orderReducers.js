@@ -22,6 +22,9 @@ import {
   ORDER_DELIVER_SUCCESS,
   ORDER_DELIVER_FAIL,
   ORDER_DELIVER_RESET,
+  ORDER_CHILDREN_REQUEST,
+  ORDER_CHILDREN_SUCCESS,
+  ORDER_CHILDREN_FAIL,
 } from '../types/orderTypes'
 
 export const orderCreateReducter = (state = {}, action) => {
@@ -156,6 +159,27 @@ export const orderListReducter = (state = { orders: [] }, action) => {
         orders: action.payload,
       }
     case ORDER_LIST_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      }
+    default:
+      return state
+  }
+}
+
+export const orderChildrenReducer = (state = { orders: [] }, action) => {
+  switch (action.type) {
+    case ORDER_CHILDREN_REQUEST:
+      return {
+        loading: true,
+      }
+    case ORDER_CHILDREN_SUCCESS:
+      return {
+        loading: false,
+        orders: action.payload,
+      }
+    case ORDER_CHILDREN_FAIL:
       return {
         loading: false,
         error: action.payload,
