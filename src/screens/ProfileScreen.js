@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUserDetails, updateUserProfile , inviteChild , getChildrenDetails } from '../redux/actions/userActions'
-import { listMyOrders } from '../redux/actions/orderActions'
+import { listMyOrders, listChildrenOrders } from '../redux/actions/orderActions'
 
 import { Link } from 'react-router-dom'
 import { Form, Button, Row, Col, Table } from 'react-bootstrap'
@@ -24,15 +24,20 @@ function ProfileScreen({ location, history }) {
   const { userInfo } = useSelector(({ userLogin }) => userLogin)
   const { success, error } = useSelector(({ userUpdateProfile }) => userUpdateProfile)
   const { success:successInviteChild, error:errorInviteChild } = useSelector(({ userInviteChild }) => userInviteChild)
+  const { orders:childrenOrders, loading: loadingChildrenOrders, error: errorChildrenOrders } = useSelector(
+    ({ orderChildren }) => orderChildren
+  )
   const { orders, loading: loadingOrders, error: errorOrders } = useSelector(
     ({ orderListMy }) => orderListMy
-  )
+  ) 
   const { loading: loadingChildren, children } = useSelector(({ userChildrenDetails }) => userChildrenDetails)
 
   useEffect(() => {
     if (!userInfo) history.push('/login')
 
     dispatch(listMyOrders())
+    dispatch(listChildrenOrders())
+
   
     if (!user?.name) {
       dispatch(getUserDetails('profile'))
@@ -229,6 +234,58 @@ function ProfileScreen({ location, history }) {
                       <td>{i+1}</td>
                       <td>{children.name}</td>
                       <td>{children.email}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            )}
+            <h2>My Children Orders</h2>
+            {loadingChildrenOrders && <Loader />}
+            {errorChildrenOrders && <Message variant='danger'>{errorChildrenOrders}</Message>}
+            {(childrenOrders === undefined || childrenOrders.length === 0) && (
+              <Message>
+                You children haven't bought anything yet.
+              </Message>
+            )}
+            {childrenOrders !== undefined && childrenOrders.length > 0 && (
+              <Table striped bordered hover responsive className='table-sm'>
+                <tbody>
+                  <tr>
+                    <th>ID</th>
+                    <th>Children</th>
+                    <th>Date</th>
+                    <th>Total</th>
+                    <th>Paid</th>
+                    <th>Delivered</th>
+                    <th>Detail</th>
+                  </tr>
+                  {childrenOrders.map((order) => (
+                    <tr key={order._id}>
+                      <td>{order._id}</td>
+                      <td>{order.user.name}</td>
+                      <td>{order.createdAt.substring(0, 10)}</td>
+                      <td>{order.totalPrice}</td>
+                      <td>
+                        {order.isPaid ? (
+                          order.paidAt.substring(0, 10)
+                        ) : (
+                          <i className='fas fa-times' style={{ color: 'red' }}></i>
+                        )}
+                      </td>
+                      <td>
+                        {order.isDelivered ? (
+                          order.deliveredAt.substring(0, 10)
+                        ) : (
+                          <i className='fas fa-times' style={{ color: 'red' }}></i>
+                        )}
+                      </td>
+                      <td>
+                        <Link to={'/order/' + order._id}>
+                          <Button size='sm' variant='light'>
+                            <i className='fas fa-arrow-right'></i>
+                          </Button>
+                        </Link>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

@@ -18,6 +18,9 @@ import {
   ORDER_DELIVER_REQUEST,
   ORDER_DELIVER_SUCCESS,
   ORDER_DELIVER_FAIL,
+  ORDER_CHILDREN_REQUEST,
+  ORDER_CHILDREN_SUCCESS,
+  ORDER_CHILDREN_FAIL,
 } from '../types/orderTypes'
 import {
   CART_CLEAR,
@@ -208,6 +211,37 @@ export const listMyOrders = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: ORDER_LIST_MY_FAIL,
+      payload:
+        error.response && error.response.data.message ? error.response.data.message : error.message,
+    })
+  }
+}
+
+export const listChildrenOrders = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: ORDER_CHILDREN_REQUEST,
+    })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        Authorization: 'Bearer ' + userInfo.token,
+      },
+    }
+
+    const { data } = await axios.get(`/api/orders/child`, config)
+
+    dispatch({
+      type: ORDER_CHILDREN_SUCCESS,
+      payload: data,
+    })
+  } catch (error) {
+    dispatch({
+      type: ORDER_CHILDREN_FAIL,
       payload:
         error.response && error.response.data.message ? error.response.data.message : error.message,
     })
