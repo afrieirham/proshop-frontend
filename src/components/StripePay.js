@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from 'react-redux';
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { payOrder } from '../redux/actions/orderActions'
+import { payOrder, childPaymentMethod } from '../redux/actions/orderActions'
 import { Button } from 'react-bootstrap';
 
 function StripePay({ email, orderId }) {
@@ -34,6 +34,7 @@ function StripePay({ email, orderId }) {
       console.log('[error]', error);
     } else {
       console.log('[PaymentMethod]', paymentMethod);
+      dispatch(childPaymentMethod(orderId, {paymentMethod : 'Stripe'}))
       dispatch(payOrder(orderId,
         {
           id: paymentMethod.id,

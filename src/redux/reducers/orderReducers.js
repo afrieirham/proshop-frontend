@@ -25,6 +25,12 @@ import {
   ORDER_CHILDREN_REQUEST,
   ORDER_CHILDREN_SUCCESS,
   ORDER_CHILDREN_FAIL,
+  CHILD_SHIPPING_ADDRESS_REQUEST,
+  CHILD_SHIPPING_ADDRESS_SUCCESS,
+  CHILD_SHIPPING_ADDRESS_FAIL,
+  CHILD_PAY_REQUEST,
+  CHILD_PAY_SUCCESS,
+  CHILD_PAY_FAIL,
 } from '../types/orderTypes'
 
 export const orderCreateReducter = (state = {}, action) => {
@@ -180,6 +186,48 @@ export const orderChildrenReducer = (state = { orders: [] }, action) => {
         orders: action.payload,
       }
     case ORDER_CHILDREN_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      }
+    default:
+      return state
+  }
+}
+
+export const childShippingReducer = (state = {}, action) => {
+  switch (action.type) {
+    case CHILD_SHIPPING_ADDRESS_REQUEST:
+      return {
+        loading: true,
+      }
+    case CHILD_SHIPPING_ADDRESS_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+      }
+    case CHILD_SHIPPING_ADDRESS_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      }
+    default:
+      return state
+  }
+}
+
+export const childPayReducer = (state = {}, action) => {
+  switch (action.type) {
+    case CHILD_PAY_REQUEST:
+      return {
+        loading: true,
+      }
+    case CHILD_PAY_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+      }
+    case CHILD_PAY_FAIL:
       return {
         loading: false,
         error: action.payload,
