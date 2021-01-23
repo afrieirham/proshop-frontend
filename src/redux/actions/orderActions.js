@@ -21,6 +21,12 @@ import {
   ORDER_CHILDREN_REQUEST,
   ORDER_CHILDREN_SUCCESS,
   ORDER_CHILDREN_FAIL,
+  CHILD_SHIPPING_ADDRESS_REQUEST,
+  CHILD_SHIPPING_ADDRESS_SUCCESS,
+  CHILD_SHIPPING_ADDRESS_FAIL,
+  CHILD_PAY_REQUEST,
+  CHILD_PAY_SUCCESS,
+  CHILD_PAY_FAIL,
 } from '../types/orderTypes'
 import {
   CART_CLEAR,
@@ -242,6 +248,72 @@ export const listChildrenOrders = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: ORDER_CHILDREN_FAIL,
+      payload:
+        error.response && error.response.data.message ? error.response.data.message : error.message,
+    })
+  }
+}
+
+export const childShippingAddress = (id, shippingInfo) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: CHILD_SHIPPING_ADDRESS_REQUEST,
+    })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        Authorization: 'Bearer ' + userInfo.token,
+      },
+    }
+
+    console.log(userInfo.token)
+
+    const { data } = await axios.put(`/api/orders/${id}/shipping`, shippingInfo, config)
+
+    dispatch({
+      type: CHILD_SHIPPING_ADDRESS_SUCCESS,
+      payload: data,
+    })
+  } catch (error) {
+    dispatch({
+      type: CHILD_SHIPPING_ADDRESS_FAIL,
+      payload:
+        error.response && error.response.data.message ? error.response.data.message : error.message,
+    })
+  }
+}
+
+export const childPaymentMethod = (id, paymentMethod) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: CHILD_PAY_REQUEST,
+    })
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        Authorization: 'Bearer ' + userInfo.token,
+      },
+    }
+
+    console.log(userInfo.token)
+
+    const { data } = await axios.put(`/api/orders/${id}/paymentMethod`, paymentMethod, config)
+
+    dispatch({
+      type: CHILD_PAY_SUCCESS,
+      payload: data,
+    })
+  } catch (error) {
+    dispatch({
+      type: CHILD_PAY_FAIL,
       payload:
         error.response && error.response.data.message ? error.response.data.message : error.message,
     })

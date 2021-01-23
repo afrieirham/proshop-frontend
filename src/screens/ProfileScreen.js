@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUserDetails, updateUserProfile , inviteChild , getChildrenDetails } from '../redux/actions/userActions'
 import { listMyOrders, listChildrenOrders } from '../redux/actions/orderActions'
+import { ORDER_DETAILS_RESET } from '../redux/types/orderTypes'
 
 import { Link } from 'react-router-dom'
 import { Form, Button, Row, Col, Table } from 'react-bootstrap'
@@ -37,7 +38,7 @@ function ProfileScreen({ location, history }) {
 
     dispatch(listMyOrders())
     dispatch(listChildrenOrders())
-
+    dispatch({ type: ORDER_DETAILS_RESET }) 
   
     if (!user?.name) {
       dispatch(getUserDetails('profile'))
@@ -46,7 +47,7 @@ function ProfileScreen({ location, history }) {
       setName(user.name)
       setEmail(user.email)
     }
-  }, [dispatch, history, userInfo, user , children])
+  }, [dispatch, history, userInfo, user , children,])
 
   const submitHandler = (e) => {
     e.preventDefault()
