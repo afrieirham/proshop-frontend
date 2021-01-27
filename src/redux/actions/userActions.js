@@ -36,7 +36,6 @@ import {
   USER_SHOW_CHILD_FAIL,
 } from '../types/userTypes'
 
-
 export const login = (email, password) => async (dispatch) => {
   try {
     dispatch({
@@ -60,7 +59,7 @@ export const login = (email, password) => async (dispatch) => {
 }
 
 export const logout = () => async (dispatch) => {
-  localStorage.removeItem('userInfo')
+  localStorage.clear()
   dispatch({ type: USER_LOGOUT })
 }
 
@@ -275,7 +274,7 @@ export const registerChild = (password, token) => async (dispatch) => {
       type: USER_REGISTER_CHILD_REQUEST,
     })
 
-    const { data } = await axios.post('/api/users/register', {password, token })
+    const { data } = await axios.post('/api/users/register', { password, token })
 
     dispatch({
       type: USER_REGISTER_CHILD_SUCCESS,
@@ -301,38 +300,32 @@ export const inviteChild = (name, email) => async (dispatch, getState) => {
   try {
     dispatch({
       type: USER_INVITE_CHILD_REQUEST,
-    });
+    })
 
     const {
       userLogin: { userInfo },
-    } = getState();
+    } = getState()
     const config = {
       headers: {
-        Authorization: "Bearer " + userInfo.token,
+        Authorization: 'Bearer ' + userInfo.token,
       },
-    };
-    const { data } = await axios.post(
-      "/api/users/child",
-      { name, email },
-      config
-    );
+    }
+    const { data } = await axios.post('/api/users/child', { name, email }, config)
 
     dispatch({
       type: USER_INVITE_CHILD_SUCCESS,
       payload: data,
-    });
+    })
 
-    localStorage.setItem("userInfo", JSON.stringify(data));
+    localStorage.setItem('userInfo', JSON.stringify(data))
   } catch (error) {
     dispatch({
       type: USER_INVITE_CHILD_FAIL,
       payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    });
+        error.response && error.response.data.message ? error.response.data.message : error.message,
+    })
   }
-};
+}
 
 export const getChildrenDetails = () => async (dispatch, getState) => {
   try {
